@@ -1,6 +1,8 @@
 {"Card": {
     "Market": "Bull",
-    "Description": "",
-    "Corporations": ["Growth"],
-    "Effects": [10]
+    "Description": "This is just garbage text",
+    "Corporations": ["Growth", "Stryker"],
+    "Effects": [10, -50]
 }},
+// Ideally the Corporations and Effects array correspond 1 to 1. Ex. this card would show growth up 10
+// and Stryker down 50
