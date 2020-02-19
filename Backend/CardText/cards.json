@@ -1,0 +1,14 @@
+{"Deck": 
+    [{"Card": {
+        "Market": "Bull",
+        "Description": "Corporation announces new metal forming process which it claims will revolutize all metal-working industries covered by U.S. and foreign patents.",
+        "Corporations": ["Growth"],
+        "Effects": [10]
+    }},
+    {"Card": {
+    "Market": "Bull",
+    "Description": "",
+    "Corporations": ["Growth"],
+    "Effects": [10]
+}}
+    ]}
