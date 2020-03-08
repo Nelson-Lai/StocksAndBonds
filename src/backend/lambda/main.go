@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"Projects/StocksAndBonds/backend/lambda/getstate"
+	"main/getstate"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -39,7 +39,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 // Mux represents the main transmuxxer
 func Mux(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	if request.HTTPMethod == "GET" {
-		return getstate.GetHandler(request)
+		return getstate.
 	}
 	if request.HTTPMethod == "POST" {
 		if strings.Contains(request.Path, "transaction") {
