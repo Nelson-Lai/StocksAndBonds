@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"StocksAndBonds/backend/lambda/getstate"
@@ -26,7 +27,7 @@ func main() {
 // Mux handles requests from API Gateway stop bitching at me
 func Mux(request events.APIGatewayProxyRequest, dynamoClient *dynamodb.DynamoDB) (events.APIGatewayProxyResponse, error) {
 	if request.HTTPMethod == "GET" {
-		return getstate.GetState(request, dynamoClient)
+		return getstate.GetState(context.TODO(), request, dynamoClient)
 	}
 	if request.HTTPMethod == "GET" {
 		return updatestate.UpdateState(request, dynamoClient)
