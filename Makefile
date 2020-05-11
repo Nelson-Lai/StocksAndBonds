@@ -3,7 +3,7 @@
 
 
 build:
-	go build backend/lambda/main.go;
+	GOARCH=amd64 GOOS=linux go build backend/lambda/main.go;
 
 deploy: build
 	zip stocksandbonds.zip main; rm main; \
