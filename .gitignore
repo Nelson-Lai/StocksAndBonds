@@ -16,3 +16,5 @@
 
 # Zip files from Lambda packaging
 *.zip
+
+.terraform/
