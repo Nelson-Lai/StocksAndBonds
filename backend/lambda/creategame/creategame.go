@@ -14,11 +14,11 @@ type GameCreator struct {
 
 func (gc GameCreator) CreateGame(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	gameName := request.Body
-	isGame, err := gc.checkGameExistence(gameName)
+	gameExists, err := gc.checkGameExistence(gameName)
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}
-	if isGame == false {
+	if gameExists == true {
 		return events.APIGatewayProxyResponse{}, fmt.Errorf("Game of name %s already exists", gameName)
 	}
 

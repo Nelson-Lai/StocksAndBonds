@@ -23,7 +23,7 @@ func main() {
 	lambda.Start(Mux)
 }
 
-// Mux handles requests from API Gateway stop bitching at me
+// Mux handles requests from API Gateway
 func Mux(request events.APIGatewayProxyRequest, dynamoClient *dynamodb.DynamoDB) (events.APIGatewayProxyResponse, error) {
 	if request.HTTPMethod == "GET" {
 		return getstate.GetState(request, dynamoClient)
