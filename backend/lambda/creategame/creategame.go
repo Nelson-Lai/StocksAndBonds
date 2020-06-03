@@ -1,53 +1,94 @@
 package creategame
 
 import (
-	"context"
+	"encoding/base64"
 	"fmt"
+	"net/http"
+
+	"StocksAndBonds/backend/lambda/game"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+)
+
+var (
+	tableName = "StocksAndBonds"
 )
 
 type GameCreator struct {
-	dynamoClient dynamodb.DynamoDB
+	DynamoClient dynamodb.DynamoDB
 }
 
-func (gc GameCreator) CreateGame(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func (gc GameCreator) CreateGame(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	gameName := request.Body
+	if request.IsBase64Encoded {
+		gameNameb64, _ := base64.StdEncoding.DecodeString(request.Body)
+		gameName = string(gameNameb64)
+	}
 	gameExists, err := gc.checkGameExistence(gameName)
 	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusInternalServerError,
+			Body:       err.Error(),
+		}, err
 	}
 	if gameExists == true {
-		return events.APIGatewayProxyResponse{}, fmt.Errorf("Game of name %s already exists", gameName)
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusFound,
+			Body:       fmt.Sprintf("Game of name %s already exists", gameName),
+		}, fmt.Errorf("Game of name %s already exists", gameName)
 	}
 
-	gameKey := "Game"
-	GameTag := dynamodb.Tag{
-		Key:   &gameKey,
-		Value: &gameName,
+	game := game.NewGame()
+	game.GameName = gameName
+	game.Players = 0
+	game.Day = 0
+
+	gameMarshall, err := dynamodbattribute.MarshalMap(game)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusInternalServerError,
+			Body:       "Marshall error oh no",
+		}, err
 	}
 
-	gc.dynamoClient.CreateTable(&dynamodb.CreateTableInput{
-		TableName: &gameName,
-		Tags:      []*dynamodb.Tag{&GameTag},
-	})
+	gc.DynamoClient.PutItem(&dynamodb.PutItemInput{
+		TableName: &tableName,
+		Item:      gameMarshall,
+	},
+	)
 
 	return events.APIGatewayProxyResponse{
-		Body: "Game is creating",
+		StatusCode: http.StatusCreated,
+		Body:       "Game Created",
 	}, nil
 }
 
 func (gc GameCreator) checkGameExistence(gamename string) (bool, error) {
-	tables, err := gc.dynamoClient.ListTables(&dynamodb.ListTablesInput{})
+	game, err := gc.DynamoClient.GetItem(
+		&dynamodb.GetItemInput{
+			TableName: &tableName,
+			Key: map[string]*dynamodb.AttributeValue{
+				"GameName": {
+					S: &gamename,
+				},
+			},
+		},
+	)
 	if err != nil {
 		return false, err
 	}
-	for _, tableName := range tables.TableNames {
-		if gamename == *tableName {
-			return true, nil
-		}
+	if len(game.Item) == 0 {
+		return false, nil
 	}
-	return false, nil
+	return true, nil
+}
 
+func stringSliceToPointerSlice(input []string) []*string {
+	output := []*string{}
+	for _, entry := range input {
+		output = append(output, &entry)
+	}
+	return output
 }
