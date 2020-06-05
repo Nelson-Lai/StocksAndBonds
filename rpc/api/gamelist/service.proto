@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package gamelists;
+option go_package = "gamelist";
+
+service GetGameLists{
+    rpc GetGameList(GameListRequest) returns (GameListResponse);
+}
+
+message GameListRequest {}
+
+message GameListResponse {
+    repeated string games = 1;
+}
