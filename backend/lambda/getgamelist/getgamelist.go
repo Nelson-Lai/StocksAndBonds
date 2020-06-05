@@ -9,6 +9,7 @@ import (
 
 var dynamoTable = "StocksAndBonds"
 
+// GameListGetter gets game lists
 type GameListGetter struct {
 	Client   *dynamodb.DynamoDB
 	Gamelist []string
