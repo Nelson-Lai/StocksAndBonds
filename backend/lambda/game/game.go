@@ -21,7 +21,7 @@ type Portfolio struct {
 	Cash      int
 }
 
-var companyList = []string{
+var CompanyList = []string{
 	"Central City",
 	"Growth Corporation",
 	"Metro Properties",
@@ -38,7 +38,7 @@ var companyList = []string{
 func NewGame() Game {
 
 	newPrices := make(map[string][]int)
-	for _, company := range companyList {
+	for _, company := range CompanyList {
 		newPrices[company] = []int{100}
 	}
 
@@ -57,7 +57,7 @@ func NewGame() Game {
 // NewPortfolio returns a portfolio object with no stocks and 10000 cash
 func NewPortfolio() Portfolio {
 	newPortfolio := make(map[string][]int)
-	for _, company := range companyList {
+	for _, company := range CompanyList {
 		newPortfolio[company] = []int{0}
 	}
 

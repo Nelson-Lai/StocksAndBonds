@@ -21,7 +21,8 @@ func isNewStateValid(playerPortolio game.Portfolio) (bool, error) {
 			return nil, errors.Wrap(err, fmt.Sprintf("Could not find company %s in map", company))
 		}
 		if numShares[len(numShares)-1] < 0 {
-
+			return false, nil
 		}
 	}
+	return true, nil
 }
