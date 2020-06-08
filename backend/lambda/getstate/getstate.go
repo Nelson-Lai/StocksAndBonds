@@ -15,13 +15,13 @@ func GetState(request events.APIGatewayProxyRequest, dynamoClient *dynamodb.Dyna
 		Gamelist: []string{},
 	}
 
-	gamelist, err := gameFetcher.GetGameList()
+	err := gameFetcher.GetGameList()
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 420}, err
 	}
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       strings.Join(gamelist.Games, ","),
+		Body:       strings.Join(gameFetcher.Gamelist, ","),
 	}, nil
 }
