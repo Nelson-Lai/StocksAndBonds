@@ -9,7 +9,7 @@ resource "aws_lambda_function" "stocksandbonds" {
   handler       = "main"
   runtime = "go1.x"
   timeout = 30
-  source_code_hash = filebase64sha256("../builds/main.zip")
+  source_code_hash = "${filebase64sha256("../builds/main.zip")}"
 }
 
 
