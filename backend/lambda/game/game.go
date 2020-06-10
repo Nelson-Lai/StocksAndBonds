@@ -1,5 +1,12 @@
 package game
 
+// UpdateRequest comes from the frontend
+type UpdateRequest struct {
+	RequestType string `json:"requestType"`
+	Requester   string `json:"requester"`
+	Game        Game   `json:"gameState"`
+}
+
 // Game contains all the information needed to play a game of stocsk and bonds
 type Game struct {
 	GameName   string

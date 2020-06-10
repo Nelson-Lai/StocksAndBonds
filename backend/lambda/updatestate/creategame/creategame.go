@@ -1,7 +1,6 @@
 package creategame
 
 import (
-	"encoding/base64"
 	"fmt"
 	"net/http"
 
@@ -20,12 +19,9 @@ type GameCreator struct {
 	DynamoClient dynamodb.DynamoDB
 }
 
-func (gc GameCreator) CreateGame(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	gameName := request.Body
-	if request.IsBase64Encoded {
-		gameNameb64, _ := base64.StdEncoding.DecodeString(request.Body)
-		gameName = string(gameNameb64)
-	}
+func (gc GameCreator) CreateGame(request game.UpdateRequest) (events.APIGatewayProxyResponse, error) {
+	gameName := request.Game.GameName
+
 	gameExists, err := gc.checkGameExistence(gameName)
 	if err != nil {
 		return events.APIGatewayProxyResponse{

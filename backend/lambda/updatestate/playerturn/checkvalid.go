@@ -1,4 +1,4 @@
-package updatestate
+package playerturn
 
 import (
 	"StocksAndBonds/backend/lambda/game"
@@ -8,7 +8,7 @@ import (
 // This file contains all the logic necessary to prevent players from
 // taking bad turns or making illegal moves
 
-func isNewStateValid(playerPortolio game.Portfolio) (bool, error) {
+func IsNewStateValid(playerPortolio game.Portfolio) (bool, error) {
 	if playerPortolio.Cash < 0 {
 		return false, nil
 	}

@@ -1,8 +1,8 @@
 package updatestate
 
 import (
-	"StocksAndBonds/backend/lambda/creategame"
 	"StocksAndBonds/backend/lambda/game"
+	"StocksAndBonds/backend/lambda/updatestate/creategame"
 	"encoding/base64"
 	"encoding/json"
 	"net/http"
@@ -11,20 +11,14 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
-type updateRequest struct {
-	RequestType string    `json:"requestType"`
-	GameName    string    `json:"gameName"`
-	GameState   game.Game `json:"gameState"`
-}
-
 func UpdateState(request events.APIGatewayProxyRequest, dynamo *dynamodb.DynamoDB) (events.APIGatewayProxyResponse, error) {
 
-	requestStruct := updateRequest{}
+	requestStruct := game.UpdateRequest{}
 
 	var requestBody = []byte(request.Body)
 	if request.IsBase64Encoded {
-		decode, _ := base64.StdEncoding.DecodeString(request.Body)
-		requestBody = decode
+		decoded, _ := base64.StdEncoding.DecodeString(request.Body)
+		requestBody = decoded
 	}
 
 	json.Unmarshal(requestBody, &requestStruct)
@@ -35,7 +29,7 @@ func UpdateState(request events.APIGatewayProxyRequest, dynamo *dynamodb.DynamoD
 
 	if requestStruct.RequestType == "creategame" {
 
-		return gameCreator.CreateGame(request)
+		return gameCreator.CreateGame(requestStruct)
 	}
 	return events.APIGatewayProxyResponse{
 		Body:       "Unknown request type",
