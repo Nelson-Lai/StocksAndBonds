@@ -48,6 +48,3 @@ github.com/aws/aws-sdk-go/service/sts
 github.com/aws/aws-sdk-go/service/sts/stsiface
 # github.com/jmespath/go-jmespath v0.3.0
 github.com/jmespath/go-jmespath
-# github.com/pkg/errors v0.9.1
-## explicit
-github.com/pkg/errors

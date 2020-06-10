@@ -3,8 +3,6 @@ package updatestate
 import (
 	"StocksAndBonds/backend/lambda/game"
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 // This file contains all the logic necessary to prevent players from
@@ -18,7 +16,7 @@ func isNewStateValid(playerPortolio game.Portfolio) (bool, error) {
 	for _, company := range game.CompanyList {
 		numShares, found := playerPortolio.Portfolio[company]
 		if !found {
-			return nil, errors.Wrap(err, fmt.Sprintf("Could not find company %s in map", company))
+			return false, fmt.Errorf("Could not find company %s in map", company)
 		}
 		if numShares[len(numShares)-1] < 0 {
 			return false, nil
