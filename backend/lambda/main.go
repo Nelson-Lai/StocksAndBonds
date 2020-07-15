@@ -1,8 +1,7 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"net/http"
 
 	"StocksAndBonds/backend/lambda/getstate"
 	"StocksAndBonds/backend/lambda/updatestate"
@@ -14,23 +13,25 @@ import (
 )
 
 func main() {
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
-
-	dynamoClient := dynamodb.New(sess)
-	fmt.Println(dynamoClient.ListTables(&dynamodb.ListTablesInput{})) // This works if you have aws configured your keys correctly
-
 	lambda.Start(Mux)
 }
 
-// Mux handles requests from API Gateway stop bitching at me
-func Mux(request events.APIGatewayProxyRequest, dynamoClient *dynamodb.DynamoDB) (events.APIGatewayProxyResponse, error) {
-	if request.HTTPMethod == "GET" {
-		return getstate.GetState(context.TODO(), request, dynamoClient)
-	}
-	if request.HTTPMethod == "GET" {
+// Mux handles requests from API Gateway
+func Mux(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+	dynamoClient := dynamodb.New(sess)
+	switch request.HTTPMethod {
+	case "GET":
+		return getstate.GetState(request, dynamoClient)
+	case "POST":
 		return updatestate.UpdateState(request, dynamoClient)
+	default:
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusCreated,
+			Body:       "wut",
+		}, nil
 	}
-	return events.APIGatewayProxyResponse{}, nil
+
 }
