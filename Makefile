@@ -6,11 +6,11 @@ build:
 	GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build backend/lambda/main.go;
 
 deploy: build
-	zip main.zip main; rm main; \
+	zip main.zip main; \
 	mv main.zip builds; \
 	cd terraform && terraform apply -auto-approve; \
 	cd ../builds; \
-	rm main.zip
+	rm main.zip;
 
 plan: build
 	zip stocksandbonds.zip main; rm main; \

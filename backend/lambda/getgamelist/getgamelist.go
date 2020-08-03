@@ -9,21 +9,23 @@ var dynamoTable = "StocksAndBonds"
 
 // GameListGetter gets game lists
 type GameListGetter struct {
-	Client   *dynamodb.DynamoDB
-	Gamelist []string
+	Client *dynamodb.DynamoDB
 }
 
 // GetGameList returns a list of games that are available in the dynamo table
-func (g GameListGetter) GetGameList() error {
+func (g GameListGetter) GetGameList() ([]string, error) {
 	games, err := g.Client.Scan(&dynamodb.ScanInput{TableName: &dynamoTable})
 	if err != nil {
-		return err
+		return []string{}, err
 	}
+
+	var gamelist []string
 
 	for _, game := range games.Items {
 		var gameName string
 		dynamodbattribute.Unmarshal(game["GameName"], &gameName)
-		g.Gamelist = append(g.Gamelist, gameName)
+		gamelist = append(gamelist, gameName)
 	}
-	return nil
+
+	return gamelist, nil
 }
