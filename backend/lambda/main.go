@@ -24,7 +24,7 @@ func Mux(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse,
 	dynamoClient := dynamodb.New(sess)
 	switch request.HTTPMethod {
 	case "GET":
-		return getstate.GetState(request, dynamoClient)
+		return getstate.GetGamelist(request, dynamoClient)
 	case "POST":
 		return updatestate.UpdateState(request, dynamoClient)
 	default:

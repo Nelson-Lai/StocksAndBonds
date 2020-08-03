@@ -2,7 +2,7 @@ package getstate
 
 import (
 	"StocksAndBonds/backend/lambda/getgamelist"
-	"strings"
+	"encoding/json"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -19,8 +19,10 @@ func GetGamelist(request events.APIGatewayProxyRequest, dynamoClient *dynamodb.D
 		return events.APIGatewayProxyResponse{StatusCode: 420}, err
 	}
 
+	bodyJSON, _ := json.Marshal(gamelist)
+
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       strings.Join(gamelist, ", "),
+		Body:       string(bodyJSON),
 	}, nil
 }
