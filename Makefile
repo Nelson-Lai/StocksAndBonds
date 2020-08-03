@@ -21,3 +21,7 @@ plan: build
 clean:
 	cd builds; \
 	rm main.zip
+
+front:
+	cd frontend/stocksandbonds; \
+	yarn start
