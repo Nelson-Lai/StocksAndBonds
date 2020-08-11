@@ -8,20 +8,25 @@ const URL = "https://eyu6c6iiy3.execute-api.us-east-2.amazonaws.com/development/
 
 function GetGamelist() {
     const [gamelist, setGamelist] = useState([""])
+
+    useEffect(() => {
+        let games = fetchGameList()
+        games.then(games => {
+            setGamelist(games)})
+    }, [])
   return (
-      <div>
+      <div className="GameList">
     <Button 
     variant="outlined" 
     color="secondary" 
     onClick={() => {
         let games = fetchGameList()
         games.then(games => {
-            console.log(games)
             setGamelist(games)})
     }}>
      Fetch the gamelist
     </Button>
-<List>Gamelist: {gamelist}
+<List>Gamelist: {toListItem(gamelist)}
 </List>
     </div>
   );
@@ -36,3 +41,13 @@ async function fetchGameList() {
 }
 
 export default GetGamelist;
+
+const toListItem = (list: string[]) => {
+    let out = []
+    for (var item of list) {
+        out.push(
+            <ListItem>{item}</ListItem>
+        )
+    }
+    return out
+}
