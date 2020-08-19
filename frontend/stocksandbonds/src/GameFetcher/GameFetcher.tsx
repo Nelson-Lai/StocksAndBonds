@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import {List, ListItem} from '@material-ui/core'
+import {List, ListItem, CircularProgress} from '@material-ui/core'
 
 
 const URL = "https://eyu6c6iiy3.execute-api.us-east-2.amazonaws.com/development/stocks"
@@ -17,12 +17,12 @@ function GetGamelist() {
   return (
       <div className="GameList">
     <Button 
-    variant="outlined" 
-    color="secondary" 
-    onClick={() => {
-        let games = fetchGameList()
-        games.then(games => {
-            setGamelist(games)})
+    variant="contained" 
+    color="default" 
+    onClick={async function() {
+        setGamelist([])
+        let games = await fetchGameList()
+        setGamelist(games)
     }}>
      Fetch the gamelist
     </Button>
@@ -42,7 +42,10 @@ async function fetchGameList() {
 
 export default GetGamelist;
 
-const toListItem = (list: string[]) => {
+function toListItem(list: string[]) {
+    if (list.length === 0) {
+        return <CircularProgress />
+    }
     let out = []
     for (var item of list) {
         out.push(
