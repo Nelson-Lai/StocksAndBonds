@@ -7,7 +7,7 @@ export default function NameEntry(nameChange:Function) {
 
   return (
 
-      <TextField placeholder="Your Name" id="outlined-basic" label="Outlined" variant="outlined" 
+      <TextField placeholder="Your Name" id="outlined-basic" label="New Name" variant="outlined" 
       onChange={(e) => {
         name = e.target.value
       }}

@@ -5,6 +5,7 @@ import GetGamelist from './GameFetcher/GameFetcher'
 import NameEntry from './Layout/NameEntry'
 import { AppBar, Button, CircularProgress, TextField } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const gameEndpoint = "https://eyu6c6iiy3.execute-api.us-east-2.amazonaws.com/development/stocks"
 
@@ -26,13 +27,10 @@ function App() {
       </AppBar>
       {GetGamelist()}
       {CreateGame()}
-      <header className="App-header">
-
-
-      
+      <div className="nameentry">
       {NameEntry(updateName)}
       {name}
-      </header>
+      </div>
     </div>
   );
 }
@@ -67,21 +65,29 @@ function CreateGame() {
 
 function checkGameCreation(gameStatus: number) {
   if (gameStatus === 1) {
-    return <CircularProgress/>
+    return <div><CircularProgress/></div>
   }
   if (gameStatus === -1) {
-    return <div>FAIL</div>
+    return <div><ClearIcon/></div>
   }
   if (gameStatus === 2) {
-    return <CheckIcon/>
+    return <div><CheckIcon/></div>
+  }
+  if (gameStatus === -2) {
+    return <div><ClearIcon/>Max Game Name Length is 15</div>
   }
   return
 }
 
 async function createGamePOST(gamename: string, updateGameStatus: Function) {
   updateGameStatus(1)
+  if (gamename.length > 15) {
+    updateGameStatus(-2)
+    return
+  }
   console.log(gamename)
   if (gamename == "") {
+    updateGameStatus(0)
     return
   }
 
