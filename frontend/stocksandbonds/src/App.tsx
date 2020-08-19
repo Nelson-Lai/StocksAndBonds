@@ -41,7 +41,6 @@ function CreateGame() {
 
   const [gameCreated, updateGameCreated] = useState(0)
   const [gameNameEntry, updateGameNameEntry] = useState("")
-  let name = ""
 
   return (
     <div className="creategame">
@@ -86,7 +85,7 @@ async function createGamePOST(gamename: string, updateGameStatus: Function) {
     return
   }
   console.log(gamename)
-  if (gamename == "") {
+  if (gamename === "") {
     updateGameStatus(0)
     return
   }
