@@ -2,26 +2,27 @@ package getstate
 
 import (
 	"StocksAndBonds/backend/lambda/getgamelist"
-	"strings"
+	"encoding/json"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
-// GetState should be the only response to a "GET" request and returns the active game list
-func GetState(request events.APIGatewayProxyRequest, dynamoClient *dynamodb.DynamoDB) (events.APIGatewayProxyResponse, error) {
+// GetGamelist should be the only response to a "GET" request and returns the active game list. It is the first thing the client does.
+func GetGamelist(request events.APIGatewayProxyRequest, dynamoClient *dynamodb.DynamoDB) (events.APIGatewayProxyResponse, error) {
 	gameFetcher := getgamelist.GameListGetter{
-		Client:   dynamoClient,
-		Gamelist: []string{},
+		Client: dynamoClient,
 	}
 
-	err := gameFetcher.GetGameList()
+	gamelist, err := gameFetcher.GetGameList()
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 420}, err
 	}
 
+	bodyJSON, _ := json.Marshal(gamelist)
+
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       strings.Join(gameFetcher.Gamelist, ","),
+		Body:       string(bodyJSON),
 	}, nil
 }
