@@ -62,12 +62,20 @@ function CreateGame() {
   )
 }
 
+/*
+-2  Input error
+-1  Request Failure / Name Taken
+0   Blank / Default
+1   Loading
+2   Success
+*/
+
 function checkGameCreation(gameStatus: number) {
   if (gameStatus === 1) {
     return <div><CircularProgress/></div>
   }
   if (gameStatus === -1) {
-    return <div><ClearIcon/></div>
+    return <div><ClearIcon/>Game name already taken?</div>
   }
   if (gameStatus === 2) {
     return <div><CheckIcon/></div>
