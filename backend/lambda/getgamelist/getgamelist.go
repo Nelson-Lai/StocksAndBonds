@@ -27,15 +27,21 @@ func (g GameListGetter) GetGameList() ([]gameTypes.Game, error) {
 		var gameName string
 		var gameState gameTypes.GameState
 		var day int
+		var players int
+		var playerList []string
 
 		dynamodbattribute.Unmarshal(game["GameName"], &gameName)
 		dynamodbattribute.Unmarshal(game["Day"], &day)
 		dynamodbattribute.Unmarshal(game["Gamestate"], &gameState)
+		dynamodbattribute.Unmarshal(game["Players"], &players)
+		dynamodbattribute.Unmarshal(game["PlayerList"], &playerList)
 
 		gameOut := gameTypes.Game{
-			GameName:  gameName,
-			Day:       day,
-			Gamestate: gameState,
+			GameName:   gameName,
+			Day:        day,
+			Gamestate:  gameState,
+			Players:    players,
+			PlayerList: playerList,
 		}
 
 		gamelist = append(gamelist, gameOut)

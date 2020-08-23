@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 
 const URL = "https://eyu6c6iiy3.execute-api.us-east-2.amazonaws.com/development/stocks"
 
-interface Game {
+export interface Game {
     GameName: string;
     Players: number;
     Day: number;
@@ -20,57 +20,62 @@ interface Game {
     Gamestate: Gamestate;
 }
 
-interface Gamestate {
+export const newEmptyGame = () => ({
+    GameName: "",
+    Players: 0,
+    Day: 0,
+    PlayerList: [],
+    Gamestate: emptyGamestate(),
+})
+
+export interface Gamestate {
     Prices: Map<string,number[]>;
     PlayerState: Map<string,Portfolio>;
 }
 
-interface Portfolio {
+const emptyGamestate = () => ({
+    Prices: new Map<string,number[]>(),
+    PlayerState: new Map<string,Portfolio>()
+})
+
+export interface Portfolio {
     Portfolio: Map<string,number[]>;
     Cash: number;
 }
 
-function GetGamelist() {
-    let emptyGame: Game[] = [];
-    const [gamelist, setGamelist] = useState(emptyGame)
+export function GetGamelist(gamelist: Game[], setGamelist: Function, hoverFunc: Function) {
 
     useEffect(() => {
-        let games = fetchGameList()
-        games.then(games => {
-            setGamelist(games)})
+       fetchGameList(setGamelist)
+
     }, [])
   return (
       <div className="GameList">
     <Button 
     variant="contained" 
     color="default" 
-    onClick={async function() {
+    onClick={function() {
         setGamelist([])
-        let games = await fetchGameList()
-        setGamelist(games)
+        fetchGameList(setGamelist)
     }}>
      Fetch the gamelist
     </Button>
-<List>Gamelist: {createGiantTable(gamelist)}
+<List>Gamelist: {createGiantTable(gamelist, hoverFunc)}
 </List>
     </div>
   );
 }
 
-async function fetchGameList() {
+async function fetchGameList(setGameList: Function) {
     const response = await fetch(URL, {
         method: 'GET'
     })
-    const games = await response.json() 
-    console.log(games)
-    return games as Game[]
+    const games = await response.json() as Game[]
+    setGameList(games)
 }
 
-export default GetGamelist;
-
-
 // omg material UI table implementations suck ass
-function createGiantTable(list: Game[]) {
+function createGiantTable(list: Game[], hoverFunc: Function) {
     return (
         <div className='GameTable'>
             <Paper>
@@ -82,6 +87,7 @@ function createGiantTable(list: Game[]) {
                     <TableCell align='right'>Game Creator</TableCell>
                     <TableCell align='right'>Day</TableCell>
                     <TableCell align='right'>Players</TableCell>
+                    <TableCell align='right'></TableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>
@@ -91,6 +97,7 @@ function createGiantTable(list: Game[]) {
                         <TableCell align='right'>{row.PlayerList ? row.PlayerList[0] : ""}</TableCell>
                         <TableCell align='right'>{row.Day ? row.Day : 0}</TableCell>
                         <TableCell align='right'>{row.PlayerList ? row.PlayerList : ""}</TableCell>
+                        <TableCell><Button size='small' onClick={(e) => {hoverFunc(row)}}>Select</Button></TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

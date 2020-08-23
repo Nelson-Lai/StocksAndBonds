@@ -1,6 +1,7 @@
 package creategame
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -38,8 +39,9 @@ func (gc GameCreator) CreateGame(request game.UpdateRequest) (events.APIGatewayP
 
 	game := game.NewGame()
 	game.GameName = gameName
-	game.Players = 0
-	game.Day = 0
+	game.Players = 1
+	game.Day = 1
+	game.PlayerList = append(game.PlayerList, request.Requester)
 
 	gameMarshall, err := dynamodbattribute.MarshalMap(game)
 	if err != nil {
@@ -87,4 +89,11 @@ func stringSliceToPointerSlice(input []string) []*string {
 		output = append(output, &entry)
 	}
 	return output
+}
+
+func (gc GameCreator) joinGame(game game.Game, player string) error {
+	if player == "" {
+		return errors.New("player name cannot be empty")
+	}
+	return nil
 }
